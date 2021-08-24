@@ -13,13 +13,15 @@ int main(int argc, char *argv[])
 	unsigned int checksum, count;
 	int i, len;
 
-	if (argc != 2) {
-		printf("Usage: mk4412 <file>\n");
+	if (argc != 2) 
+	{
+		printf("Usage: mkbl1 <file>\n");
 		return -1;
 	}
 
 	fp = fopen(argv[1], "r+b");
-	if (fp == NULL) {
+	if (fp == NULL) 
+	{
 		printf("Can not open file '%s'\n", argv[1]);
 		return -1;
 	}
@@ -30,13 +32,15 @@ int main(int argc, char *argv[])
 
 	fseek(fp, 0L, SEEK_SET);
 	memset(buffer, 0, sizeof(buffer));
-	if (fread(buffer, 1, count, fp) != count) {
+	if (fread(buffer, 1, count, fp) != count) 
+	{
 		printf("Can't read %s\n", argv[1]);
 		fclose(fp);
 		return -1;
 	}
 
-	for (i = 16, checksum = 0; i < count; i++) {
+	for (i = 16, checksum = 0; i < count; i++) 
+	{
 		checksum += buffer[i] & 0xff;
 	}
 
@@ -69,12 +73,14 @@ int main(int argc, char *argv[])
 	header[14] ^= 0xdf;
 	header[15] ^= 0xdf;
 
-	for (i = 1; i < HEADER_SIZE; i++) {
+	for (i = 1; i < HEADER_SIZE; i++)
+	{
 		header[i] ^= header[i - 1];
 	}
 
 	fseek(fp, 0L, SEEK_SET);
-	if (fwrite(header, 1, sizeof(header), fp) != sizeof(header)) {
+	if (fwrite(header, 1, sizeof(header), fp) != sizeof(header))
+	{
 		printf("Write header error %s\n", argv[1]);
 		fclose(fp);
 		return -1;
