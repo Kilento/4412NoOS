@@ -1,21 +1,21 @@
 SECTIONS
 {
-	/* ָ�����ӵ�ַΪ 0x02023400, �豣֤λ���йش�������������Ӧ���ڴ��ַ�� */
+	/* 指定链接地址为 0x02023400, 需保证位置有关代码需运行在相应的内存地址上 */
 	. = 0x02023400;
-	/* �����(�ı���)���洢��������Ķ������ı� */
+	/* 代码段(文本段)，存储代码编译后的二进制文本 */
 	.text : {
 			start.o
 			* (.text)
 	}
-	/* ֻ�����ݶΣ�read only data�� */
+	/* 只读数据段（read only data） */
 	.rodata ALIGN(4) : {
 		*(.rodata*)
 	}
-        /* ���ݶ� */
+  /* 数据段 */
 	.data ALIGN(4) : {
 		*(.data)
 	}
-	/* bss�Σ�Block Started by Symbol��δ��ʼ���Ļ��߳�ʼ��Ϊ 0 ��ȫ�ֱ����;�̬�������ֽ� ZI �Σ�Zero Inital�� */
+	/* bss段（Block Started by Symbol）未初始化的或者初始化为 0 的全局变量和静态变量，又叫 ZI 段（Zero Inital） */
 	bss_start = .;
 	.bss ALIGN(4): {
 			* (.bss)

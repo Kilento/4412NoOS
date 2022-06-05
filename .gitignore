@@ -1,0 +1,6 @@
+# linux
+.vscode
+*.o
+*.dis
+*.bin
+*.dis
