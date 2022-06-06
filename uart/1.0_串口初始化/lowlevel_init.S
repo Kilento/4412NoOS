@@ -14,6 +14,8 @@
 #define CLK_SRC_TOP1 (0x10030000 + 0xC214)
 #define CLK_SRC_LEFTBUS (0x10030000 + 0x4200)
 #define CLK_SRC_RIGHTBUS (0x10030000 + 0x8200)
+#define CLK_SRC_LEFTBUS (0x10030000 + 0x4200)
+#define CLK_SRC_PERIL0 (0x10030000 + 0xC250)
 
 #define CLK_DIV_CPU0 (0x10040000 + 0x4500)
 #define CLK_DIV_CPU1 (0x10040000 + 0x4504)
@@ -22,6 +24,7 @@
 #define CLK_DIV_TOP  (0x10030000 + 0xC510)
 #define CLK_DIV_LEFTBUS (0x10030000 + 0x4500)
 #define CLK_DIV_RIGHTBUS (0x10030000 + 0x8500)
+#define CLK_DIV_PERIL0 (0x10030000 + 0xC550)
 
 .global lowlevel_init
 lowlevel_init:
@@ -90,6 +93,11 @@ lowlevel_init:
 	ldr r0, =(CLK_SRC_RIGHTBUS)
 	ldr r1, =0x00000010
 	str r1, [r0]
+
+	ldr r0, =(CLK_SRC_PERIL0)
+	ldr r1, =0x00666666
+	str r1, [r0]
+
     // CORE2_RATIO = 0 APLL_RATIO = 1 PCLK_DBG_RATIO = 1 ATB_RATIO = 4 PERIPH_RATIO = 3
 	// COREM1_RATIO = 7 COREM0_RATIO = 3 CORE_RATIO = 0
 	ldr r0, =(CLK_DIV_CPU0)
@@ -123,4 +131,10 @@ lowlevel_init:
 	ldr r1, =0x00000013
 	str r1, [r0]
 
+	ldr r0, =(CLK_DIV_PERIL0)
+	ldr r1, =0x00777777
+	str r1, [r0]
+
 	mov pc, lr
+
+
