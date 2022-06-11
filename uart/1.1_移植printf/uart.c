@@ -24,7 +24,7 @@ void uart_init(void)
 	UFRACVAL2 = 4;
 
 	return;
-}
+} 
 
 void putc(unsigned char c)
 {

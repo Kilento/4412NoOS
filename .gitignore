@@ -1,7 +1,10 @@
 # linux
 .vscode
 *.o
+*.so
+*.a
 *.dis
 *.bin
 *.dis
 *.elf
+.clang-format

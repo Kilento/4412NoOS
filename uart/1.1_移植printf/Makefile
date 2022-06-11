@@ -1,12 +1,14 @@
 INCDIR := $(shell pwd)
-CFLAGS := -nostdlib -nostdinc -I$(INCDIR)/include
-CPPFLAGS := -Wall -O0 -fno-builtin 
+LIB := lib
+CFLAGS := -nostdlib -nostdinc -I$(INCDIR)/$(LIB)/include
+CPPFLAGS := -Wall -O0 -fno-builtin  -fno-tree-scev-cprop 
 TARGET := uart.bin
 LOCATION := /dev/sdb 
 CROSS_COMPILE := arm-none-linux-gnueabi-
 Q := @
+
 objs := start.o uart.o lowlevel_init.o sdram_init.o main.o
-objs += lib/libc.a
+objs += $(LIB)/libc.a
 
 export CFLAGS CPPFLAGS CROSS_COMPILE INCDIR Q
 
@@ -15,8 +17,8 @@ $(TARGET) : $(objs)
 	$(Q)$(CROSS_COMPILE)objcopy -O binary uart.elf $@
 	$(Q)$(CROSS_COMPILE)objdump -D uart.elf > uart.dis
 
-lib/libc.a:
-	$(Q)cd lib;make;cd ..
+$(LIB)/libc.a:
+	$(Q)cd $(LIB);make;cd ..
 
 %.o : %.S
 	$(Q)$(CROSS_COMPILE)gcc $(CPPFLAGS) $(CFLAGS)  -o $@ $< -c
@@ -26,7 +28,7 @@ lib/libc.a:
 
 .PHONY:clean install
 clean:
-	$(Q)cd lib;make clean; cd ..
+	$(Q)cd $(LIB);make clean; cd ..
 	$(Q)rm -rf *.o *.elf *.bin *.dis mkbl1
 
 install:
