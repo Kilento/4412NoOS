@@ -31,8 +31,8 @@
 
 #define do_div(n, base)                                                        \
     ({                                                                         \
-        register unsigned long long __n asm("r0") = n;                         \
         register unsigned int __base asm("r4") = base;                         \
+        register unsigned long long __n asm("r0") = n;                         \
         register unsigned long long __res asm("r2");                           \
         register unsigned int __rem asm(__xh);                                 \
         asm(__asmeq("%0", __xh) __asmeq("%1", "r2") __asmeq("%2", "r0")        \

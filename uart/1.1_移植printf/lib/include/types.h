@@ -11,6 +11,11 @@
 typedef unsigned int size_t;
 #endif /* _SIZE_T */
 
+#ifndef _U8_
+#define _U8_
+typedef unsigned long long u8;
+#endif /* _U8_ */
+
 #ifndef _U32_
 #define _U32_
 typedef unsigned int u32;
@@ -25,5 +30,10 @@ typedef unsigned int uint;
 #define _U64_
 typedef unsigned long long u64;
 #endif /* _U64_ */
+
+#ifndef __PTRDIFF_TYPE__
+#define __PTRDIFF_TYPE__ long int
+#endif
+typedef __PTRDIFF_TYPE__ ptrdiff_t;
 
 #endif /* _TPYES_H */

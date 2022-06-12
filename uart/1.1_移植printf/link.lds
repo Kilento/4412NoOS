@@ -5,13 +5,16 @@ SECTIONS
 	/* 代码段(文本段)，存储代码编译后的二进制文本 */
 	.text : {
 			start.o
+			sdram_init.o
+			main.o
+			uart.o
 			* (.text)
 	}
 	/* 只读数据段（read only data） */
 	.rodata ALIGN(4) : {
 		*(.rodata*)
 	}
-  /* 数据段 */
+  	/* 数据段 */
 	.data ALIGN(4) : {
 		*(.data)
 	}
@@ -21,6 +24,5 @@ SECTIONS
 			* (.bss)
 			* (COMMON)
 	}
-	
 	bss_end = .;
 }

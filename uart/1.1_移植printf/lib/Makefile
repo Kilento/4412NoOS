@@ -1,4 +1,4 @@
-objs := div64.o lib1funcs.o ctype.o muldi3.o printf.o string.o vsprintf.o
+objs := div64.o ctype.o string.o vsprintf.o
 
 libc.a: $(objs)
 	$(Q)${CROSS_COMPILE}ar -r -o $@ $^

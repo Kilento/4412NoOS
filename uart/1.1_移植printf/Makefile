@@ -1,9 +1,9 @@
 INCDIR := $(shell pwd)
 LIB := lib
 CFLAGS := -nostdlib -nostdinc -I$(INCDIR)/$(LIB)/include
-CPPFLAGS := -Wall -O0 -fno-builtin  -fno-tree-scev-cprop 
+CPPFLAGS := -Wall -O2 -fno-builtin  -fno-tree-scev-cprop 
 TARGET := uart.bin
-LOCATION := /dev/sdb 
+LOCATION := /dev/sdf
 CROSS_COMPILE := arm-none-linux-gnueabi-
 Q := @
 
