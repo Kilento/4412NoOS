@@ -93,7 +93,7 @@ lowlevel_init:
 	ldr r0, =(CLK_SRC_RIGHTBUS)
 	ldr r1, =0x00000010
 	str r1, [r0]
-
+	// 选择串口时钟源为SCLKMPLL
 	ldr r0, =(CLK_SRC_PERIL0)
 	ldr r1, =0x00666666
 	str r1, [r0]
