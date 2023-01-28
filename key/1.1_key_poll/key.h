@@ -18,7 +18,7 @@ extern "C"
 #define KEY_BACK 1
 #define KEY_SLEEP 2
 #define KEY_VOLUME_REDUCE 3
-#define KEY_VILUME_PLUS 4
+#define KEY_VOLUME_PLUS 4
 
 void key_init(void);
 

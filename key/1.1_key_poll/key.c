@@ -36,7 +36,7 @@ int get_key_value(int key_id)
             key_value = GPX2DAT & 0x1;
             break;
         }
-        case KEY_VILUME_PLUS:
+        case KEY_VOLUME_PLUS:
         {
             key_value = GPX2DAT & 0x2;
             break;
@@ -74,7 +74,7 @@ void put_key_value(int key_id)
             printf("Vol-\n");
             break;
         }
-        case KEY_VILUME_PLUS:
+        case KEY_VOLUME_PLUS:
         {
             printf("Vol+\n");
             break;

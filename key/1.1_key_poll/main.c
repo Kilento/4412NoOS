@@ -33,9 +33,9 @@ int main(void)
             put_key_value(KEY_VOLUME_REDUCE);
         }
 
-        key_value = get_key_value(KEY_VILUME_PLUS);
+        key_value = get_key_value(KEY_VOLUME_PLUS);
         if (0 == key_value) {
-            put_key_value(KEY_VILUME_PLUS);
+            put_key_value(KEY_VOLUME_PLUS);
         }
     }
 
