@@ -43,7 +43,7 @@ int get_key_value(int key_id)
         }
         default:
         {
-            key_value = 0;
+            key_value = 1;
             break;
         }
     }
