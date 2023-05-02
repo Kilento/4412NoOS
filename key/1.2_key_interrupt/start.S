@@ -48,6 +48,17 @@ GPK1DAT(输出模式时，用于控制GPIO的输出电平)：
 .global irq_handler
 
 _start:
+    b reset
+    b .
+    b .
+    b .
+    b .
+    b .
+    //IRQ
+    b irq_handler
+    b .
+
+reset:
 	/* 将 PS_HOLD_CONTRO 置为输出模式且使能。如果不设置在设备冷启动时程序运行一遍后就停止，重新按复位才会重新运行程序。详细原因后面再介绍 */
 	ldr r0, =PS_HOLD_CONTROL
 	ldr r1, [r0]
@@ -104,6 +115,73 @@ clear_loop:
 	bne clear_loop
 	
 run_on_newaddr:
+/*
+     * Set vector address in CP15 VBAR register
+     */ 
+    ldr    r0, =_start
+    mcr    p15, 0, r0, c12, c0, 0    @Set VBAR
+
+    /*
+     * Set the cpu to SVC32 mode, Disable FIQ/IRQ
+     */  
+    mrs r0, cpsr
+    bic r0, r0, #0x1f
+    orr    r0, r0, #0xd3
+    msr    cpsr ,r0
+
+    /*
+     * Defines access permissions for each coprocessor
+     */  
+    mov    r0, #0xfffffff
+    mcr    p15, 0, r0, c1, c0, 2      
+
+    /*
+     * Invalidate L1 I/D                                                                                                                   
+     */
+    mov    r0, #0                    @Set up for MCR
+    mcr    p15, 0, r0, c8, c7, 0    @Invalidate TLBs
+    mcr    p15, 0, r0, c7, c5, 0    @Invalidate icache
+    
+    /*
+     * Disable MMU stuff and caches
+     */
+    mrc    p15, 0, r0, c1, c0, 0
+    bic    r0, r0, #0x00002000        @Clear bits 13 (--V-)
+    bic    r0, r0, #0x00000007        @Clear bits 2:0 (-CAM)
+    orr    r0, r0, #0x00001000        @Set bit 12 (---I) Icache
+    orr    r0, r0, #0x00000002        @Set bit 1 (--A-) Align
+    orr    r0, r0, #0x00000800        @Set bit 11 (Z---) BTB
+    mcr    p15, 0, r0, c1, c0, 0
+
+    /*
+     * Initialize stacks                                                                                                                  
+     */
+init_stack:     
+    /*svc mode stack*/
+    msr cpsr, #0xd3
+    ldr sp, _stack_svc_end
+
+    /*undef mode stack*/
+    msr cpsr, #0xdb
+    ldr sp, _stack_und_end
+
+    /*abort mode stack*/    
+    msr cpsr,#0xd7
+    ldr sp,_stack_abt_end
+
+    /*irq mode stack*/    
+    msr cpsr,#0xd2
+    ldr sp, _stack_irq_end
+    
+    /*fiq mode stack*/
+    msr cpsr,#0xd1
+    ldr sp, _stack_fiq_end
+    
+    /*user mode stack, enable FIQ/IRQ*/
+    msr cpsr,#0x10
+    ldr sp, _stack_usr_end
+
+    /*Call main*/
 	ldr pc, = main 	/* 使用长加载进行地址跳转，不能再使用 bl 进行跳转 */
 b .
 
@@ -113,3 +191,31 @@ irq_handler:
 	stmfd sp!,{r0-r12,lr} /* 将所有寄存器（r0-r12, lr）的值按顺序存储到当前栈顶位置 */
 	bl irq_exception  /* 跳转到中断程序  */
 	ldmfd sp!,{r0-r12,pc}^ /* 中断返回程序会从栈中弹出之前存储的所有寄存器的值，并跳转回原来的程序入口地址 */
+
+_stack_svc_end:      
+    .word stack_svc + 512
+_stack_und_end:      
+    .word stack_und + 512
+_stack_abt_end:      
+    .word stack_abt + 512
+_stack_irq_end:      
+    .word stack_irq + 512
+_stack_fiq_end:
+    .word stack_fiq + 512
+_stack_usr_end:      
+    .word stack_usr + 512
+
+.data
+stack_svc:      
+    .space 512
+stack_und:
+    .space 512
+stack_abt:      
+    .space 512
+stack_irq:      
+    .space 512
+stack_fiq:      
+    .space 512
+
+stack_usr:      
+    .space 512

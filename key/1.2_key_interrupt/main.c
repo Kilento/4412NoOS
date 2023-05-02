@@ -22,12 +22,12 @@ int main(void)
 
     printf("OK");
 
-    led_ctrl(0, 0);
-    led_ctrl(1, 1);
+    led_ctrl(0, 1);
+    led_ctrl(1, 0);
 
     interrupt_init();
 
-    interrupt_vector_table();
+    // interrupt_vector_table();
 
     // 等待中断程序发生
     while (1)
