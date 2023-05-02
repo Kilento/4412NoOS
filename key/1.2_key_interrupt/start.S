@@ -44,10 +44,10 @@ GPK1DAT(输出模式时，用于控制GPIO的输出电平)：
 #define PS_HOLD_CONTROL (POW_MNG_UNIT_BASE + 0x330C)
 #define WATCHDOG		  0x10060000
 
-.global irq_handle
+.section .text
+.global irq_handler
 
 _start:
-	
 	/* 将 PS_HOLD_CONTRO 置为输出模式且使能。如果不设置在设备冷启动时程序运行一遍后就停止，重新按复位才会重新运行程序。详细原因后面再介绍 */
 	ldr r0, =PS_HOLD_CONTROL
 	ldr r1, [r0]
@@ -66,17 +66,18 @@ _start:
 	str r1, [r0]
 	
 	ldr sp, =0x02050000
-	
 	/* 打开或者关闭 iCache */
 	mrc p15, 0, r0, c1, c0, 0  /* 将 CP15 寄存器 C1 的值读到 r0 中 */
 	//bic r0, r0, #(1<<12)	   /* bit12 置0 关闭 iCache */
 	orr r0, r0, #(1<<12)	   /* bit12 置1 开启 iCache */
+	//orr r0, r0, #(1 << 13)   /* bit13 置1 设置异常向量表到 0xFFFF0000  */
 	mcr p15, 0, r0, c1, c0, 0  /* 将 r0 的值写到 CP15 寄存器 C1 中 */
 	/* 时钟初始化 */
 	bl lowlevel_init
+
 	/* 初始化sdram */
 	bl mem_init
-	
+
 	adr r0, _start				/* 短加载运行时地址 */
 	ldr r1, =_start				/* 长加载链接时地址 */
 	ldr r2, =bss_start			/* 链接脚本中定义的 bss_start 地址 */
@@ -102,14 +103,13 @@ clear_loop:
 	cmp r0, r1				
 	bne clear_loop
 	
-run_on_newaddr:	
+run_on_newaddr:
 	ldr pc, = main 	/* 使用长加载进行地址跳转，不能再使用 bl 进行跳转 */
-	
 b .
 
-irq_handle:
+irq_handler:
     /* 中断程序执行时，会自动将当前pc指针地址存入 lr 寄存器中 */
 	sub  lr,lr,#4  /* 由于 armv7 使用两级流水线，PC 指针地址= 当前执行指令地址 + 8，当前中断处理程序地址 = pc - 4 */
 	stmfd sp!,{r0-r12,lr} /* 将所有寄存器（r0-r12, lr）的值按顺序存储到当前栈顶位置 */
-	bl	irq_exception  /* 跳转到中断程序  */
+	bl irq_exception  /* 跳转到中断程序  */
 	ldmfd sp!,{r0-r12,pc}^ /* 中断返回程序会从栈中弹出之前存储的所有寄存器的值，并跳转回原来的程序入口地址 */

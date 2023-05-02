@@ -8,7 +8,7 @@ LOCATION := /dev/sdf
 CROSS_COMPILE := arm-none-linux-gnueabi-
 Q := @
 
-objs := start.o uart.o lowlevel_init.o sdram_init.o main.o key.o s3c4412_interrupt.o
+objs := start.o uart.o lowlevel_init.o sdram_init.o main.o key.o s3c4412_interrupt.o led.o
 objs += $(LIB)/libc.a
 
 export CFLAGS CPPFLAGS CROSS_COMPILE INCDIR Q
