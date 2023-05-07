@@ -13,8 +13,15 @@ void beep_init(void)
 void beep_ctrl(int on)
 {
     if (on) {
-        PWM.TCON = (PWM.TCON & ~(1 << 0)) | (1 << 0); // 开启 PWM 定时器
+        PWM.TCON &= ~0Xff;
+        PWM.TCON |= (1 << 1); // 更新 TCNTB0 and TCMPB0
+        // PWM.TCON |= (1 << 2); // 开启 PWM 波反转
+        PWM.TCON |= (1 << 3); // 开启 PWM 波自动装载
+        PWM.TCON |= (1 << 4); // 开启 PWM 波死区
+        PWM.TCON |= (1 << 0); // 开启 PWM 定时器
     } else {
-        PWM.TCON = PWM.TCON & ~(1 << 0); // 关闭 PWM 定时器
+        PWM.TCON &= ~0Xff; // 关闭 PWM 定时器
     }
+
+    return;
 }

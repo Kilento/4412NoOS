@@ -1,4 +1,5 @@
 #include "s3c4412_interrupt.h"
+#include "beep.h"
 #include "key.h"
 #include "led.h"
 #include "s3c4412_gpio.h"
@@ -60,6 +61,7 @@ static void fiq_exception(void)
 
 void irq_exception(void)
 {
+    static int beep = 1;
     int irq_num = 0;
     int key_id = 0;
 
@@ -73,6 +75,8 @@ void irq_exception(void)
         key_id = KEY_HOME;
         EXT_INT41_PEND |= (0x1 << 1); // 清GPIO中断标志位
         put_key_value(key_id);
+        beep = !beep;
+        beep_ctrl(beep);
         break;
     }
     default: {
