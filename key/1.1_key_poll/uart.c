@@ -28,6 +28,7 @@ void uart_init(void)
 
 void putc(unsigned char c)
 {
+	
 	while (!(UTRSTAT2 & (1 << 2)));
 	UTXH2 = c;
 	

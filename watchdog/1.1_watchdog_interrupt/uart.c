@@ -28,6 +28,13 @@ void uart_init(void)
 
 void putc(unsigned char c)
 {
+    /* 解决回车不换行问题 */
+    if (c == '\n') {
+        while (!(UTRSTAT2 & (1 << 2)))
+            ;
+        UTXH2 = '\r';
+    }
+
     while (!(UTRSTAT2 & (1 << 2)))
         ;
     UTXH2 = c;
