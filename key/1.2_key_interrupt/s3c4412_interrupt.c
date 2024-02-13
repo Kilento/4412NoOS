@@ -4,60 +4,6 @@
 #include "stdio.h"
 #include "led.h"
 
-// 函数指针类型
-typedef void (*ExcHandler)(void);
-
-// 全局异常向量表
-ExcHandler g_ExcVectorTable[32];
-
-// 异常处理函数入口
-void ExcHandlerEntry(unsigned int vector)
-{
-    ExcHandler handler = g_ExcVectorTable[vector >> 2];
-    handler();
-}
-
-static void reset_exception(void)
-{
-    printf("reset_exception.\n");
-    return;
-}
-
-static void undef_exception(void)
-{
-    printf("undef_exception.\n");
-
-    return;
-}
-
-void soft_exception(void)
-{
-    printf("soft_exception.\n");
-
-    return;
-}
-
-static void prefetch_exception(void)
-{
-    printf("prefetch_exception.\n");
-
-    return;
-}
-
-static void data_exception(void)
-{
-    printf("data_exception.\n");
-
-    return;
-}
-
-static void fiq_exception(void)
-{
-    printf("fiq_exception.\n");
-
-    return;
-}
-
 void irq_exception(void)
 {
     int irq_num = 0;
@@ -137,31 +83,3 @@ void interrupt_init(void)
     return;
 }
 
-void interrupt_vector_table(void)
-{
-    printf("interrupt_vector_table begin\n");
-    __asm volatile("mcr p15, 0, %0, c12, c0, 0" ::"r"(EXCEPTION_VECTOR_TABLE_BASE));
-
-    EXCEPTION_VECTOR_RESET = (unsigned long)reset_exception;
-    EXCEPTION_VECTOR_UNDEF = (unsigned long)undef_exception;
-    EXCEPTION_VECTOR_SUPERVISOR = (unsigned long)soft_exception;
-    EXCEPTION_VECTOR_PREFETCH = (unsigned long)prefetch_exception;
-    EXCEPTION_VECTOR_DATA = (unsigned long)data_exception;
-    EXCEPTION_VECTOR_IRQ = (unsigned long)irq_handler;
-    EXCEPTION_VECTOR_FIQ = (unsigned long)fiq_exception;
-
-    // g_ExcVectorTable[0] = (ExcHandler)reset_exception;
-    // g_ExcVectorTable[1] = (ExcHandler)undef_exception;
-    // g_ExcVectorTable[2] = (ExcHandler)soft_exception;
-    // g_ExcVectorTable[3] = (ExcHandler)prefetch_exception;
-    // g_ExcVectorTable[4] = (ExcHandler)data_exception;
-    // g_ExcVectorTable[5] = (ExcHandler)irq_exception;
-    // g_ExcVectorTable[6] = (ExcHandler)fiq_exception;
-
-    //    asm("mcr p15, 0, %[addr], c12, c0, 0" ::[addr] "r"(g_ExcVectorTable));
-    // 将全局异常向量表的地址写入协处理器 12 中
-
-    printf("interrupt_vector_table end = %p\n", EXCEPTION_VECTOR_TABLE_BASE);
-
-    return;
-}

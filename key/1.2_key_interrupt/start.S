@@ -48,15 +48,15 @@ GPK1DAT(输出模式时，用于控制GPIO的输出电平)：
 .global irq_handler
 
 _start:
-    b reset
-    b .
-    b .
-    b .
-    b .
-    b .
+    b reset  // 0x00
+    b .      // 0x04
+    b .      // 0x08
+    b .      // 0x0C
+    b .      // 0x10
+    b .      // 0x14
     //IRQ
-    b irq_handler
-    b .
+    b irq_handler // 0x18
+    b .           // 0x1C
 
 reset:
 	/* 将 PS_HOLD_CONTRO 置为输出模式且使能。如果不设置在设备冷启动时程序运行一遍后就停止，重新按复位才会重新运行程序。详细原因后面再介绍 */
